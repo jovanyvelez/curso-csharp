@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body  {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            width: 200px;
+            height: 200px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button>Button 1</button>
+    <button>Button 2</button>
+    <button>Button 3</button>
+    <button>Button 4</button>
+    <button>Button 5</button>
+    <script>
+        let pressTimer;
+        const buttons = document.querySelectorAll('button');
+        const tercero = buttons[2];
+
+        // Función para mostrar mensaje pequeño (cambiar texto del botón)
+        function showMessage(button, index) {
+            button.innerText = `Presionado ${index + 1}`;
+            // Opcional: resetear después de un tiempo
+            setTimeout(() => {
+                button.innerText = `Button ${index + 1}`;
+            }, 1000);
+        }
+
+        // Detectar si es dispositivo touchscreen
+        const isTouchDevice = 'ontouchstart' in window;
+
+        // Para el tercer botón: solo responder en long press (2 segundos) en touchscreen
+        if (isTouchDevice) {
+            tercero.addEventListener('touchstart', (e) => {
+                pressTimer = setTimeout(() => {
+                    showMessage(tercero, 2);
+                }, 2000);
+            });
+            tercero.addEventListener('touchend', (e) => {
+                clearTimeout(pressTimer);
+            });
+        }
+
+        // Para clicks (desktop o touchscreen sin long press): comportamiento normal para todos
+        buttons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                showMessage(button, index);
+            });
+        });
+
+        // Para los demás botones en touchscreen: mostrar mensaje inmediatamente al touch
+        if (isTouchDevice) {
+            buttons.forEach((button, index) => {
+                if (index !== 2) { // Saltar el tercer botón
+                    button.addEventListener('touchstart', () => {
+                        showMessage(button, index);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
